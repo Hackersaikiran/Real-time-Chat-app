@@ -6,12 +6,17 @@ const mongoose = require("mongoose");
 
 const app = express();
 
+// Normalize FRONTEND_URL to remove trailing slash
+const frontendUrl = process.env.FRONTEND_URL?.replace(/\/$/, '') || 'http://localhost:5173';
+
 const corsOptions = {
-	origin: process.env.FRONTEND_URL,
+	origin: frontendUrl,
 	methods: ["GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"],
 	allowedHeaders: ["Content-Type", "Authorization"],
 	credentials: true,
 };
+
+console.log('CORS configured for origin:', frontendUrl);
 
 app.use(cors(corsOptions));
 app.use(express.json());
