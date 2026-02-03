@@ -29,15 +29,6 @@ const userRouter = require("./routes/user");
 const chatRouter = require("./routes/chat");
 const messageRouter = require("./routes/message");
 
-// Connect to Database
-main()
-	.then(() => console.log("Database Connection established"))
-	.catch((err) => console.log(err));
-
-async function main() {
-	await mongoose.connect(process.env.MONGODB_URI);
-}
-
 // Root route
 app.get("/", (req, res) => {
 	res.json({
@@ -63,22 +54,27 @@ app.use((err, req, res, next) => {
 	res.status(500).json({ message: errorMessage });
 });
 
-// Start the server
-const server = app.listen(PORT, async () => {
-	console.log(`Server listening on ${PORT}`);
-});
+// Connect to Database and Start the server
+async function startServer() {
+	try {
+		await mongoose.connect(process.env.MONGODB_URI);
+		console.log("Database Connection established");
+		
+		const server = app.listen(PORT, () => {
+			console.log(`Server listening on ${PORT}`);
+		});
 
-// Socket.IO setup
-const { Server } = require("socket.io");
-const io = new Server(server, {
-	pingTimeout: 60000,
-	transports: ["websocket"],
-	cors: corsOptions,
-});
+		// Socket.IO setup
+		const { Server } = require("socket.io");
+		const io = new Server(server, {
+			pingTimeout: 60000,
+			transports: ["websocket"],
+			cors: corsOptions,
+		});
 
-// Socket connection
-io.on("connection", (socket) => {
-	console.log("Connected to socket.io:", socket.id);
+		// Socket connection
+		io.on("connection", (socket) => {
+			console.log("Connected to socket.io:", socket.id);
 
 	// Join user and message send to client
 	const setupHandler = (userId) => {
@@ -159,3 +155,11 @@ io.on("connection", (socket) => {
 		socket.off("chat created", chatCreateChatHandler);
 	});
 });
+	} catch (err) {
+		console.error("Failed to start server:", err);
+		process.exit(1);
+	}
+}
+
+// Start the server
+startServer();
