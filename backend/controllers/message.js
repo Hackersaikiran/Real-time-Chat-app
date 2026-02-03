@@ -2,13 +2,28 @@ const Chat = require("../models/chat");
 const Message = require("../models/message");
 
 const createMessage = async (req, res) => {
-	const { message, chatId } = req.body;
-	if (message) {
-		const newMessage = await Message.create({
+	const { message, chatId, image } = req.body;
+	
+	// Either message or image must be provided
+	if (!message?.trim() && !image) {
+		return res.status(400).json({ message: "Message or image is required" });
+	}
+
+	try {
+		const messageData = {
 			sender: req.user._id,
-			message: message,
 			chat: chatId,
-		});
+		};
+
+		if (message?.trim()) {
+			messageData.message = message.trim();
+		}
+
+		if (image) {
+			messageData.image = image;
+		}
+
+		const newMessage = await Message.create(messageData);
 		const chat = await Chat.findByIdAndUpdate(chatId, {
 			latestMessage: newMessage._id,
 		});
@@ -19,8 +34,9 @@ const createMessage = async (req, res) => {
 				populate: { path: "users groupAdmin", select: "-password" },
 			});
 		return res.status(201).json({ data: fullMessage });
-	} else {
-		return res.status(400).json({ message: "Message not provide" });
+	} catch (error) {
+		console.error("Error creating message:", error);
+		return res.status(500).json({ message: "Failed to create message" });
 	}
 };
 

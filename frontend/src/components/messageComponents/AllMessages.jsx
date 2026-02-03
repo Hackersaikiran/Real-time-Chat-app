@@ -115,9 +115,18 @@ const AllMessages = ({ allMessage }) => {
                                                 : "pr-12"
                                         }`}
                                     >
-                                        <span className="">
-                                            {message?.message}
-                                        </span>
+                                        {message?.image && (
+                                            <img 
+                                                src={message.image} 
+                                                alt="message-image" 
+                                                className="max-w-xs rounded-lg mb-2 max-h-64 object-contain"
+                                            />
+                                        )}
+                                        {message?.message && (
+                                            <span className="">
+                                                {message?.message}
+                                            </span>
+                                        )}
                                         <span
                                             className="text-[11px] font-light absolute bottom-1 right-2 flex items-end gap-1.5"
                                             title={SimpleDateAndTime(

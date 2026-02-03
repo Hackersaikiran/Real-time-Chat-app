@@ -9,8 +9,11 @@ const messageSchema = mongoose.Schema(
 		},
 		message: {
 			type: String,
-			required: true,
 			trim: true,
+		},
+		image: {
+			type: String,
+			default: null,
 		},
 		chat: {
 			type: mongoose.Schema.Types.ObjectId,

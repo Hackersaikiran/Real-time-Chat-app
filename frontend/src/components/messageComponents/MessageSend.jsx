@@ -11,11 +11,10 @@ import { LuLoader } from "react-icons/lu";
 import { toast } from "react-toastify";
 import socket from "../../socket/socket";
 
-let lastTypingTime;
 const MessageSend = ({ chatId }) => {
 	const mediaFile = useRef();
-	// const [mediaBox, setMediaBox] = useState(false);
-	// const [mediaURL, setMediaURL] = useState("");
+	const [mediaBox, setMediaBox] = useState(false);
+	const [mediaURL, setMediaURL] = useState("");
 	const [newMessage, setMessage] = useState("");
 	const dispatch = useDispatch();
 	const isSendLoading = useSelector(
@@ -35,41 +34,70 @@ const MessageSend = ({ chatId }) => {
 	// Media Box Control
 	const handleMediaBox = () => {
 		if (mediaFile.current?.files[0]) {
-			// const file = mediaFile.current.files[0];
-			// const url = URL.createObjectURL(file);
-			// setMediaURL(url);
-			// setMediaBox(true);
-			toast.warn("Comming soon...");
+			const file = mediaFile.current.files[0];
+			const url = URL.createObjectURL(file);
+			setMediaURL(url);
+			setMediaBox(true);
 		} else {
-			// setMediaBox(false);
+			setMediaBox(false);
 		}
 	};
 
 	// Media Box Hidden && Input file remove
-	// const clearMediaFile = () => {
-	//     mediaFile.current.value = "";
-	//     setMediaURL("");
-	//     setMediaBox(false);
-	// };
+	const clearMediaFile = () => {
+		mediaFile.current.value = "";
+		setMediaURL("");
+		setMediaBox(false);
+	};
+
+	// Convert image to base64
+	const convertToBase64 = (file) => {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = () => resolve(reader.result);
+			reader.onerror = (error) => reject(error);
+		});
+	};
 
 	// Send Message Api call
 	const handleSendMessage = async () => {
-		if (newMessage?.trim()) {
+		if ((newMessage?.trim() || mediaBox) && !isSendLoading) {
 			const message = newMessage?.trim();
 			setMessage("");
 			socket.emit("stop typing", selectedChat._id);
 			dispatch(setSendLoading(true));
 			const token = localStorage.getItem("token");
+
+			let messageBody = {
+				chatId: chatId,
+			};
+
+			// Handle text message
+			if (message) {
+				messageBody.message = message;
+			}
+
+			// Handle image message
+			if (mediaBox && mediaFile.current?.files[0]) {
+				try {
+					const base64 = await convertToBase64(mediaFile.current.files[0]);
+					messageBody.image = base64;
+				} catch (error) {
+					console.error("Error converting image:", error);
+					toast.error("Failed to upload image");
+					dispatch(setSendLoading(false));
+					return;
+				}
+			}
+
 			fetch(`${import.meta.env.VITE_BACKEND_URL}/api/message`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: `Bearer ${token}`,
 				},
-				body: JSON.stringify({
-					message: message,
-					chatId: chatId,
-				}),
+				body: JSON.stringify(messageBody),
 			})
 				.then((res) => res.json())
 				.then((json) => {
@@ -77,6 +105,8 @@ const MessageSend = ({ chatId }) => {
 					dispatch(addNewMessage(json?.data));
 					socket.emit("new message", json.data);
 					dispatch(setSendLoading(false));
+					clearMediaFile();
+					toast.success("Message sent!");
 				})
 				.catch((err) => {
 					console.log(err);
@@ -106,28 +136,28 @@ const MessageSend = ({ chatId }) => {
 
 	return (
 		<>
-			{/* {mediaBox && (
-                <div className="border-slate-500 border rounded-md absolute bottom-[7vh] mb-1 left-2 bg-slate-800 w-60 h-48 ">
-                    <img
-                        src={mediaURL}
-                        alt="media"
-                        className="h-full w-full object-contain"
-                    />
-                    <MdOutlineClose
-                        title="Delete"
-                        size={25}
-                        className="absolute top-2 right-3 cursor-pointer text-white bg-slate-800 rounded-xl p-1"
-                        onClick={clearMediaFile}
-                    />
-                </div>
-            )} */}
+			{mediaBox && (
+				<div className="border border-blue-400/50 rounded-xl absolute bottom-[8vh] mb-2 left-4 bg-gradient-to-br from-slate-800 to-slate-900 w-48 h-48 shadow-xl shadow-blue-500/30">
+					<img
+						src={mediaURL}
+						alt="media-preview"
+						className="h-full w-full object-cover rounded-lg"
+					/>
+					<MdOutlineClose
+						title="Remove image"
+						size={25}
+						className="absolute top-2 right-2 cursor-pointer text-white bg-red-500 hover:bg-red-600 rounded-lg p-1 transition-all"
+						onClick={clearMediaFile}
+					/>
+				</div>
+			)}
 			<form
 				className="w-full flex items-center gap-2 h-[7vh] p-3 bg-gradient-to-r from-blue-900/30 to-slate-900 text-white border-t border-blue-400/30"
 				onSubmit={(e) => e.preventDefault()}
 			>
 				<label htmlFor="media" className="cursor-pointer text-blue-300 hover:text-blue-100 transition-all">
 					<FaFolderOpen
-						title="Open File"
+						title="Attach image"
 						size={20}
 						className="active:scale-75 hover:scale-110 transition-all"
 					/>
@@ -149,10 +179,11 @@ const MessageSend = ({ chatId }) => {
 					onChange={(e) => handleTyping(e)}
 				/>
 				<span className="flex justify-center items-center gap-2">
-					{newMessage?.trim() && !isSendLoading && (
+					{(newMessage?.trim() || mediaBox) && !isSendLoading && (
 						<button
 							className="outline-none p-2 text-blue-300 hover:text-blue-100 hover:bg-blue-500/30 rounded-lg transition-all transform hover:scale-110"
 							onClick={handleSendMessage}
+							type="button"
 						>
 							<FaPaperPlane
 								title="Send"
