@@ -12,12 +12,12 @@ const ChatDetailsBox = () => {
 	const [detailView, setDetailView] = useState("overview");
 	return (
 		<>
-			<div className="w-fit h-[60vh] p-2 flex flex-col gap-1.5 bg-slate-900">
+			<div className="w-fit h-[60vh] p-3 flex flex-col gap-2 bg-gradient-to-b from-blue-900/30 to-slate-900/30 border border-blue-400/30 rounded-xl">
 				<div
-					className={`flex gap-2 items-center p-1 text-white rounded-md px-2 cursor-pointer ${
+					className={`flex gap-2 items-center p-2 text-white rounded-lg px-3 cursor-pointer transition-all transform hover:scale-105 ${
 						detailView === "overview"
-							? "bg-blue-950"
-							: "bg-slate-800"
+							? "bg-gradient-to-r from-blue-500/50 to-cyan-500/50 border border-blue-400/50 shadow-lg shadow-blue-500/30"
+							: "bg-white/10 border border-blue-400/20 hover:bg-white/20"
 					}`}
 					onClick={() => setDetailView("overview")}
 					title="Overview"
@@ -27,10 +27,10 @@ const ChatDetailsBox = () => {
 				</div>
 				{selectedChat?.isGroupChat && (
 					<div
-						className={`flex gap-2 items-center p-1 text-white rounded-md px-2 cursor-pointer ${
+						className={`flex gap-2 items-center p-2 text-white rounded-lg px-3 cursor-pointer transition-all transform hover:scale-105 ${
 							detailView === "members"
-								? "bg-blue-950"
-								: "bg-slate-800"
+								? "bg-gradient-to-r from-blue-500/50 to-cyan-500/50 border border-blue-400/50 shadow-lg shadow-blue-500/30"
+								: "bg-white/10 border border-blue-400/20 hover:bg-white/20"
 						}`}
 						onClick={() => setDetailView("members")}
 						title="Member"
@@ -40,10 +40,10 @@ const ChatDetailsBox = () => {
 					</div>
 				)}
 				<div
-					className={`flex gap-2 items-center p-1 text-white rounded-md px-2 cursor-pointer ${
+					className={`flex gap-2 items-center p-2 text-white rounded-lg px-3 cursor-pointer transition-all transform hover:scale-105 ${
 						detailView === "setting"
-							? "bg-blue-950"
-							: "bg-slate-800"
+							? "bg-gradient-to-r from-blue-500/50 to-cyan-500/50 border border-blue-400/50 shadow-lg shadow-blue-500/30"
+							: "bg-white/10 border border-blue-400/20 hover:bg-white/20"
 					}`}
 					onClick={() => setDetailView("setting")}
 					title="Setting"
@@ -52,7 +52,7 @@ const ChatDetailsBox = () => {
 					<span className="hidden sm:block">Setting</span>
 				</div>
 			</div>
-			<div className="w-full h-[60vh]">
+			<div className="w-full h-[60vh] bg-gradient-to-b from-slate-900/50 to-slate-950 border border-blue-400/20 rounded-xl p-4 overflow-y-auto">
 				{detailView === "overview" && <Overview />}
 				{detailView === "members" && <Member />}
 				{detailView === "setting" && <ChatSetting />}

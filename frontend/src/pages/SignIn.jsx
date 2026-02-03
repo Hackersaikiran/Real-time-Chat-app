@@ -70,72 +70,80 @@ const SignIn = () => {
 		}
 	};
 	return (
-		<div className="flex flex-col items-center my-6 text-slate-300 min-h-[80vh]">
-			<div className="p-3 w-[80%] sm:w-[60%] md:w-[50%] lg:w-[40%] min-w-72 max-w-[1000px] border border-slate-400 bg-slate-800 rounded-lg h-fit  mt-5 transition-all">
-				<h2 className="text-2xl underline underline-offset-8 font-semibold text-slate-100 w-full text-center mb-4">
-					SignIn ChatApp
-				</h2>
-				<form className="w-full flex justify-between flex-col">
-					<h3 className="text-xl font-semibold p-1">
-						Enter Email Address
-					</h3>
-					<input
-						className="w-full border border-slate-700 my-3 py-4 px-8 rounded-full flex justify-between bg-white text-black "
-						type="email"
-						placeholder="Enter Email Address"
-						name="email"
-						value={email}
-						onChange={(e) => setEmail(e.target.value)}
-					/>
-					<h3 className="text-xl font-semibold p-1">
-						Enter Password
-					</h3>
-					<div className="relative">
+		<div className="animated-bg-dark min-h-[80vh] flex flex-col items-center justify-center p-4 relative overflow-hidden">
+			{/* Floating background elements */}
+			<div className="absolute top-10 left-10 w-40 h-40 bg-green-500 rounded-full opacity-10 blur-3xl animate-pulse"></div>
+			<div className="absolute bottom-10 right-10 w-40 h-40 bg-cyan-500 rounded-full opacity-10 blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+
+			<div className="glass-effect p-8 rounded-2xl backdrop-blur-md w-full sm:w-[90%] md:w-[60%] lg:w-[45%] max-w-[500px] shadow-2xl border border-green-400/30 animate-slideUp" style={{animation: 'slideUp 0.6s ease-out'}}>
+				<div className="text-center mb-8">
+					<h2 className="text-4xl font-bold bg-gradient-to-r from-green-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent mb-2">
+						🔐 Sign In
+					</h2>
+					<p className="text-green-200 text-sm">Welcome back to your chat community</p>
+				</div>
+
+				<form className="w-full flex flex-col gap-4">
+					<div>
+						<label className="text-green-300 font-semibold text-sm block mb-2">
+							📧 Email Address
+						</label>
 						<input
-							className="w-full border border-slate-700 my-3 py-4 px-8 rounded-full flex justify-between bg-white text-black "
-							type={isShow ? "text" : "password"}
-							placeholder="Enter Password"
-							name="password"
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
+							className="w-full px-4 py-3 rounded-lg bg-white/10 border border-green-400/50 text-white placeholder-gray-400 focus:outline-none focus:border-green-300 focus:bg-white/20 transition-all"
+							type="email"
+							placeholder="Enter your email"
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+							required
 						/>
-						<span
-							onClick={() => setIsShow(!isShow)}
-							className="cursor-pointer text-black/80 absolute right-5 top-8"
-						>
-							{isShow ? (
-								<PiEyeClosedLight fontSize={22} />
-							) : (
-								<PiEye fontSize={22} />
-							)}
-						</span>
 					</div>
+
+					<div>
+						<label className="text-green-300 font-semibold text-sm block mb-2">
+							🔒 Password
+						</label>
+						<div className="relative">
+							<input
+								className="w-full px-4 py-3 rounded-lg bg-white/10 border border-green-400/50 text-white placeholder-gray-400 focus:outline-none focus:border-green-300 focus:bg-white/20 transition-all pr-10"
+								type={isShow ? "text" : "password"}
+								placeholder="Enter your password"
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+								required
+							/>
+							<button
+								type="button"
+								onClick={() => setIsShow(!isShow)}
+								className="absolute right-3 top-3 text-green-300 hover:text-green-100"
+							>
+								{isShow ? (
+									<PiEyeClosedLight fontSize={20} />
+								) : (
+									<PiEye fontSize={20} />
+								)}
+							</button>
+						</div>
+					</div>
+
 					<button
+						type="button"
 						onClick={(e) => {
 							e.preventDefault();
 							handleLogin(e);
 						}}
-						className="disabled:opacity-50 disabled:cursor-not-allowed w-full font-semibold hover:bg-black rounded-full px-5 py-4 mt-5 text-lg border border-slate-400  text-slate-400 hover:text-white bg-slate-700 transition-all"
+						className="w-full mt-6 py-3 px-4 rounded-lg font-bold text-white bg-gradient-to-r from-green-500 to-cyan-600 hover:from-green-600 hover:to-cyan-700 transform hover:scale-105 transition-all shadow-lg hover:shadow-green-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
 					>
-						{load == "" ? "SignIn" : load}
+						{load === "" ? "Sign In" : load}
 					</button>
-					<div className="w-full flex items-center mt-3">
-						<div className="w-full h-[1px] bg-slate-600"></div>
-						<Link to={"#"}>
-							<div className="p-3 font-semibold text-md hover:text-white whitespace-nowrap">
-								Forgot Password
-							</div>
+
+					<div className="flex items-center gap-2 text-green-300 text-sm mt-4">
+						<span>Don't have an account?</span>
+						<Link
+							to="/signup"
+							className="font-bold text-transparent bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text hover:underline transition-all"
+						>
+							Sign Up Here
 						</Link>
-						<div className="w-full h-[1px] bg-slate-600"></div>
-					</div>
-					<div className="w-full flex items-center my-3">
-						<div className="w-full h-[1px] bg-slate-600"></div>
-						<Link to="/signup">
-							<div className="p-3 font-semibold text-md hover:text-white">
-								SignUp
-							</div>
-						</Link>
-						<div className="w-full h-[1px] bg-slate-600"></div>
 					</div>
 				</form>
 			</div>

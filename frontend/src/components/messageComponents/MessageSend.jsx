@@ -122,14 +122,14 @@ const MessageSend = ({ chatId }) => {
                 </div>
             )} */}
 			<form
-				className="w-full flex items-center gap-1 h-[7vh] p-3 bg-slate-800 text-white"
+				className="w-full flex items-center gap-2 h-[7vh] p-3 bg-gradient-to-r from-blue-900/30 to-slate-900 text-white border-t border-blue-400/30"
 				onSubmit={(e) => e.preventDefault()}
 			>
-				<label htmlFor="media" className="cursor-pointer">
+				<label htmlFor="media" className="cursor-pointer text-blue-300 hover:text-blue-100 transition-all">
 					<FaFolderOpen
 						title="Open File"
-						size={22}
-						className="active:scale-75 hover:text-green-400"
+						size={20}
+						className="active:scale-75 hover:scale-110 transition-all"
 					/>
 				</label>
 				<input
@@ -143,26 +143,26 @@ const MessageSend = ({ chatId }) => {
 				/>
 				<input
 					type="text"
-					className="outline-none p-2 w-full bg-transparent"
-					placeholder="Type a message"
+					className="outline-none p-3 w-full bg-white/10 border border-blue-400/50 rounded-lg text-white placeholder-blue-300/50 focus:border-blue-300 focus:bg-white/20 transition-all"
+					placeholder="✨ Type a message..."
 					value={newMessage}
 					onChange={(e) => handleTyping(e)}
 				/>
-				<span className="flex justify-center items-center">
+				<span className="flex justify-center items-center gap-2">
 					{newMessage?.trim() && !isSendLoading && (
 						<button
-							className="outline-none p-2 border-slate-500 border-l"
+							className="outline-none p-2 text-blue-300 hover:text-blue-100 hover:bg-blue-500/30 rounded-lg transition-all transform hover:scale-110"
 							onClick={handleSendMessage}
 						>
 							<FaPaperPlane
 								title="Send"
 								size={18}
-								className="active:scale-75 hover:text-green-400"
+								className="active:scale-75"
 							/>
 						</button>
 					)}
 					{isSendLoading && (
-						<button className="outline-none p-2 border-slate-500 border-l">
+						<button className="outline-none p-2 text-blue-400">
 							<LuLoader
 								title="loading..."
 								fontSize={18}
