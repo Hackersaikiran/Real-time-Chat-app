@@ -4,7 +4,7 @@ const Message = require("../models/message");
 const postChat = async (req, res) => {
 	const { userId } = req.body;
 	if (!userId) {
-		return res.status(200).json({ message: "userId not provide" });
+		return res.status(400).json({ message: "userId not provided" });
 	}
 	const existingChat = await Chat.find({
 		isGroupChat: false,
@@ -59,12 +59,12 @@ const getChat = async (req, res) => {
 };
 const createGroup = async (req, res) => {
 	if (!req.body.users || !req.body.name) {
-		return res.status(200).json({ message: "users and name not provide" });
+		return res.status(400).json({ message: "users and name not provided" });
 	}
 	const users = req.body.users;
 	if (users.length < 2) {
 		return res
-			.status(200)
+			.status(400)
 			.json({ message: "min 2 users required for group" });
 	}
 	users.push(req.user._id);
@@ -88,7 +88,7 @@ const deleteGroup = async (req, res) => {
 const renameGroup = async (req, res) => {
 	const { name, chatId } = req.body;
 	if (!name || !chatId) {
-		return res.status(200).json({ message: "name and chatId not provide" });
+		return res.status(400).json({ message: "name and chatId not provided" });
 	}
 	const chat = await Chat.findByIdAndUpdate(
 		chatId,
@@ -98,7 +98,7 @@ const renameGroup = async (req, res) => {
 		.populate("users", "-password")
 		.populate("groupAdmin", "-password");
 	if (!chat) {
-		return res.status(200).json({ message: "chat not found" });
+		return res.status(404).json({ message: "chat not found" });
 	} else {
 		return res.status(200).json({ data: chat });
 	}
@@ -107,8 +107,8 @@ const removeFromGroup = async (req, res) => {
 	const { chatId, userId } = req.body;
 	if (!chatId || !userId) {
 		return res
-			.status(200)
-			.json({ message: "chatId and userId not provide" });
+			.status(400)
+			.json({ message: "chatId and userId not provided" });
 	}
 	const chat = await Chat.findByIdAndUpdate(
 		chatId,
@@ -118,7 +118,7 @@ const removeFromGroup = async (req, res) => {
 		.populate("users", "-password")
 		.populate("groupAdmin", "-password");
 	if (!chat) {
-		return res.status(200).json({ message: "chat not found" });
+		return res.status(404).json({ message: "chat not found" });
 	} else {
 		return res.status(200).json({ data: chat });
 	}
@@ -127,8 +127,8 @@ const addToGroup = async (req, res) => {
 	const { chatId, userId } = req.body;
 	if (!chatId || !userId) {
 		return res
-			.status(200)
-			.json({ message: "chatId and userId not provide" });
+			.status(400)
+			.json({ message: "chatId and userId not provided" });
 	}
 	const chat = await Chat.findByIdAndUpdate(
 		chatId,
@@ -138,7 +138,7 @@ const addToGroup = async (req, res) => {
 		.populate("users", "-password")
 		.populate("groupAdmin", "-password");
 	if (!chat) {
-		return res.status(200).json({ message: "chat not found" });
+		return res.status(404).json({ message: "chat not found" });
 	} else {
 		return res.status(200).json({ data: chat });
 	}

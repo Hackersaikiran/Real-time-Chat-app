@@ -47,9 +47,9 @@ app.use("/api/user", userRouter);
 app.use("/api/chat", chatRouter);
 app.use("/api/message", messageRouter);
 
-// Invaild routes
+// Invalid routes
 app.all("*", (req, res) => {
-	res.json({ error: "Invaild Route" });
+	res.json({ error: "Invalid Route" });
 });
 
 // Error handling middleware
