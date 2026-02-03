@@ -29,24 +29,31 @@ const SignUp = () => {
 				password: password,
 			}),
 		})
-			.then((response) => response.json())
+			.then((response) => {
+				if (!response.ok) {
+					return response.json().then(err => Promise.reject(err));
+				}
+				return response.json();
+			})
 			.then((json) => {
 				setLoad("");
 				e.target.disabled = false;
 				toast.dismiss();
+				console.log("Signup Response:", json);
 				if (json.token) {
 					navigate("/signin");
-					toast.success(json?.message);
+					toast.success(json?.message || "Registration Successful");
 				} else {
-					toast.error(json?.message);
+					toast.error(json?.message || "Signup failed");
 				}
 			})
 			.catch((error) => {
 				console.error("Error:", error);
 				setLoad("");
-				toast.dismiss();
-				toast.error("Error : " + error.code);
 				e.target.disabled = false;
+				toast.dismiss();
+				const errorMsg = error?.message || error?.code || "Network error";
+				toast.error("Error: " + errorMsg);
 			});
 	};
 	const handleSignup = (e) => {
