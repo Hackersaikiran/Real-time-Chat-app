@@ -2,6 +2,109 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Animated gradient background */
+@keyframes gradientShift {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+@keyframes floatingBackground {
+	0%, 100% {
+		transform: translateY(0px) translateX(0px);
+	}
+	25% {
+		transform: translateY(-10px) translateX(5px);
+	}
+	50% {
+		transform: translateY(-20px) translateX(-5px);
+	}
+	75% {
+		transform: translateY(-10px) translateX(5px);
+	}
+}
+
+@keyframes pulse-glow {
+	0%, 100% {
+		opacity: 0.5;
+		transform: scale(1);
+	}
+	50% {
+		opacity: 0.8;
+		transform: scale(1.05);
+	}
+}
+
+@keyframes slideUp {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+body {
+	user-select: none;
+	animation: fadeIn 0.5s ease-in;
+}
+
+.animated-bg {
+	background: linear-gradient(
+		-45deg,
+		#ee7752,
+		#e73c7e,
+		#23a6d5,
+		#23d5ab
+	);
+	background-size: 400% 400%;
+	animation: gradientShift 15s ease infinite;
+}
+
+.animated-bg-dark {
+	background: linear-gradient(
+		-45deg,
+		#1e293b,
+		#1a1a2e,
+		#16213e,
+		#0f3460
+	);
+	background-size: 400% 400%;
+	animation: gradientShift 20s ease infinite;
+}
+
+.glass-effect {
+	background: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(10px);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.card-hover {
+	transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
 body::-webkit-scrollbar,
 .scroll-style::-webkit-scrollbar {
 	width: 5px;
